@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WILIB — Book a Ride · Massachusetts</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --dark: #0d1117; --accent: #c8401a; --green: #16a34a;
+  --text: #1a1a1a; --muted: #6b7280; --border: #e5e7eb;
+  --bg: #f9f8f6; --surface: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+
+nav {
+  background: var(--dark); padding: 0 24px; height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+.logo span { color: var(--accent); }
+nav a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 13px; }
+nav a:hover { color: #fff; }
+
+.hero {
+  background: var(--dark); color: #fff;
+  padding: 56px 24px 72px; text-align: center;
+  background-image: radial-gradient(ellipse at 50% -20%, rgba(200,64,26,0.25) 0%, transparent 60%);
+}
+.hero-label { font-size: 11px; letter-spacing: 3px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+.hero h1 { font-size: clamp(28px,5vw,52px); font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p { color: rgba(255,255,255,0.5); font-size: 14px; max-width: 380px; margin: 0 auto; line-height: 1.6; }
+
+.form-wrap {
+  max-width: 540px; margin: -28px auto 48px;
+  padding: 0 20px; position: relative; z-index: 10;
+}
+
+.form-card {
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.10), 0 0 0 1px var(--border);
+  overflow: hidden;
+}
+
+.form-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #fafaf8;
+}
+.form-head h2 { font-size: 16px; font-weight: 700; }
+.form-head p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.form-body { padding: 24px; }
+
+.frow { margin-bottom: 16px; }
+.frow label {
+  display: block; font-size: 11px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 6px;
+}
+.frow input, .frow select {
+  width: 100%; padding: 11px 14px;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 9px; font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; color: var(--text); outline: none;
+  transition: border-color 0.2s;
+}
+.frow input:focus, .frow select:focus { border-color: var(--accent); background: #fff; }
+.frow input::placeholder { color: #bbb; }
+
+.f2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.submit-btn {
+  width: 100%; padding: 14px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 9px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 4px;
+}
+.submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.alert {
+  padding: 14px 16px; border-radius: 9px;
+  font-size: 13px; margin-top: 16px;
+  display: none; line-height: 1.5;
+}
+.alert.success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.alert.error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+.divider { margin: 32px 0 24px; text-align: center; position: relative; }
+.divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:var(--border); }
+.divider span { background: var(--bg); padding: 0 12px; position: relative; font-size: 12px; color: var(--muted); }
+
+.routes-grid {
+  max-width: 540px; margin: 0 auto 48px; padding: 0 20px;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+}
+.route-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; cursor: pointer;
+  transition: all 0.2s;
+}
+.route-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.route-from { font-size: 13px; font-weight: 600; }
+.route-arr { color: var(--accent); margin: 2px 0; font-size: 13px; }
+.route-to { font-size: 12px; color: var(--muted); }
+
+.footer {
+  background: var(--dark); color: rgba(255,255,255,0.45);
+  text-align: center; padding: 24px; font-size: 12px;
+}
+.footer strong { color: #fff; }
+
+@media(max-width:500px) { .f2col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">WI<span>LIB</span></div>
+  <a href="admin.html">Admin ↗</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">Long Distance · Massachusetts · 20+ Miles</div>
+  <h1>Reserve your ride<br><em>in 2 minutes</em></h1>
+  <p>Book in advance. We match you with the nearest available driver and confirm within 30 minutes.</p>
+</div>
+
+<div class="form-wrap">
+  <div class="form-card">
+    <div class="form-head">
+      <h2>🚗 Book a Reservation</h2>
+      <p>All trips must be 20+ miles · Massachusetts & New England</p>
+    </div>
+    <div class="form-body">
+      <div class="frow">
+        <label>Full Name</label>
+        <input type="text" id="f-name" placeholder="Jean Pierre">
+      </div>
+      <div class="frow">
+        <label>Phone Number</label>
+        <input type="tel" id="f-phone" placeholder="+1 (978) 000-0000">
+      </div>
+      <div class="f2col">
+        <div class="frow">
+          <label>Departing From</label>
+          <input type="text" id="f-from" placeholder="Brockton, MA">
+        </div>
+        <div class="frow">
+          <label>Going To</label>
+          <input type="text" id="f-to" placeholder="Providence, RI">
+        </div>
+      </div>
+      <div class="f2col">
+        <div class="frow">
+          <label>Date</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="frow">
+          <label>Time</label>
+          <input type="time" id="f-time">
+        </div>
+      </div>
+      <div class="frow">
+        <label>Number of Passengers</label>
+        <select id="f-pax">
+          <option value="1">1 passenger</option>
+          <option value="2">2 passengers</option>
+          <option value="3">3 passengers</option>
+          <option value="4">4 passengers</option>
+          <option value="5">5 passengers</option>
+          <option value="6">6 passengers</option>
+          <option value="7">7 passengers</option>
+        </select>
+      </div>
+
+      <button class="submit-btn" id="submit-btn" onclick="submitReservation()">
+        Reserve Now →
+      </button>
+
+      <div class="alert" id="alert"></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><span>Popular routes</span></div>
+
+<div class="routes-grid">
+  <div class="route-card" onclick="fillRoute('Brockton, MA','Boston, MA')">
+    <div class="route-from">Brockton</div>
+    <div class="route-arr">→</div>
+    <div class="route-to">Boston</div>
+  </div>
+  <div class="route-card" onclick="fillRoute('Boston, MA','Worcester, MA')">
+    <div class="route-from">Boston</div>
+    <div class="route-arr">→</div>
+    <div class="route-to">Worcester</div>
+  </div>
+  <div class="route-card" onclick="fillRoute('Brockton, MA','Providence, RI')">
+    <div class="route-from">Brockton</div>
+    <div class="route-arr">→</div>
+    <div class="route-to">Providence, RI</div>
+  </div>
+  <div class="route-card" onclick="fillRoute('Boston, MA','Hartford, CT')">
+    <div class="route-from">Boston</div>
+    <div class="route-arr">→</div>
+    <div class="route-to">Hartford, CT</div>
+  </div>
+  <div class="route-card" onclick="fillRoute('Lowell, MA','Boston, MA')">
+    <div class="route-from">Lowell</div>
+    <div class="route-arr">→</div>
+    <div class="route-to">Boston</div>
+  </div>
+  <div class="route-card" onclick="fillRoute('Boston, MA','New York, NY')">
+    <div class="route-from">Boston</div>
+    <div class="route-arr">→</div>
+    <div class="route-to">New York</div>
+  </div>
+</div>
+
+<footer class="footer">
+  <strong>WILIB Transport</strong> · 978-624-8221 · Massachusetts<br>
+  <span style="font-size:10px;opacity:0.5;margin-top:4px;display:block">Long Distance Reservations · 20+ Miles Only</span>
+</footer>
+
+<script>
+// CHANJE URL SA A apre ou deplwaye sou Railway
+const SERVER = window.location.origin;
+
+function fillRoute(from, to) {
+  document.getElementById('f-from').value = from;
+  document.getElementById('f-to').value = to;
+  document.querySelector('.form-wrap').scrollIntoView({ behavior:'smooth' });
+}
+
+function showAlert(msg, type) {
+  const el = document.getElementById('alert');
+  el.textContent = msg;
+  el.className = `alert ${type}`;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+async function submitReservation() {
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const from  = document.getElementById('f-from').value.trim();
+  const to    = document.getElementById('f-to').value.trim();
+  const date  = document.getElementById('f-date').value;
+  const time  = document.getElementById('f-time').value;
+  const pax   = document.getElementById('f-pax').value;
+
+  if (!name||!phone||!from||!to||!date||!time) {
+    showAlert('Please fill in all fields.', 'error'); return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const resp = await fetch(`${SERVER}/api/reservations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_name: name,
+        client_phone: phone,
+        from_city: from,
+        to_city: to,
+        passengers: pax,
+        trip_date: new Date(date).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),
+        trip_time: new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})
+      })
+    });
+
+    const data = await resp.json();
+
+    if (data.success) {
+      showAlert(
+        `✅ Reservation #${data.reservation_id} confirmed!\n\nWe are finding the nearest driver. You will receive a call to confirm your trip. Thank you for choosing WILIB!`,
+        'success'
+      );
+      ['f-name','f-from','f-to','f-date','f-time'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('f-pax').value='1';
+    } else {
+      showAlert(data.error || 'Error. Please call 978-624-8221.', 'error');
+    }
+  } catch(e) {
+    showAlert('Connection error. Please call us at 978-624-8221.', 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Reserve Now →';
+}
+</script>
+</body>
+</html>
