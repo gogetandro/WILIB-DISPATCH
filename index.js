@@ -47,16 +47,22 @@ const CITIES = {
 
 function getCoords(city) {
   const words = city.toLowerCase().split(/[\s,]+/);
-const states = ['ma','nh','ct','ri','ny','massachusetts'];
-for (let i = words.length - 1; i >= 0; i--) {
-  if (states.includes(words[i])) continue;
-  if (!words[i].match(/^\d+$/)) {
+  const states = ['ma','nh','ct','ri','ny','vt','me','massachusetts'];
+  // Eseye chak mo nan adrès la
+  for (let i = 0; i < words.length; i++) {
+    if (states.includes(words[i])) continue;
+    if (words[i].match(/^\d+$/)) continue;
+    if (words[i].length < 3) continue;
     const k = words[i];
     if (CITIES[k]) return CITIES[k];
+    // Eseye konbine 2 mo (ex: "new bedford", "fall river")
+    if (i < words.length - 1) {
+      const k2 = words[i] + ' ' + words[i+1];
+      if (CITIES[k2]) return CITIES[k2];
+    }
   }
-}
-const k = city.toLowerCase().replace(/,?\s*(ma|nh|ct|ri|ny|massachusetts)\s*$/i,'').trim();
-return CITIES[k] || null;
+  // Default — Boston kòm santral Massachusetts
+  return [42.3601, -71.0589];
 }
 
 function haversine(lat1,lng1,lat2,lng2) {
