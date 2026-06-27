@@ -46,8 +46,17 @@ const CITIES = {
 };
 
 function getCoords(city) {
-  const k = city.toLowerCase().replace(/,?\s*(ma|nh|ct|ri|ny|massachusetts)\s*$/i,'').trim();
-  return CITIES[k] || null;
+  const words = city.toLowerCase().split(/[\s,]+/);
+const states = ['ma','nh','ct','ri','ny','massachusetts'];
+for (let i = words.length - 1; i >= 0; i--) {
+  if (states.includes(words[i])) continue;
+  if (!words[i].match(/^\d+$/)) {
+    const k = words[i];
+    if (CITIES[k]) return CITIES[k];
+  }
+}
+const k = city.toLowerCase().replace(/,?\s*(ma|nh|ct|ri|ny|massachusetts)\s*$/i,'').trim();
+return CITIES[k] || null;
 }
 
 function haversine(lat1,lng1,lat2,lng2) {
